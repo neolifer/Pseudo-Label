@@ -97,7 +97,7 @@ if __name__ == '__main__':
     if args.dataset in ['Cora','CiteSeer']:
         pl_per_round = 140
     else:
-        pl_per_round = 60
+        pl_per_round = 120
     path = osp.join('datasets', args.dataset)
     dataset = get_dataset(path, args.dataset)
     data = dataset[0]
@@ -114,8 +114,8 @@ if __name__ == '__main__':
         # teacher_model = GATTeacher(in_dim, 512, num_classes).cuda()
         # teacher_model = GCN2(model_level = 'Node', dim_node = in_dim, dim_hidden = 64, num_classes = num_classes, alpha = 0.1, theta = 0.5, num_layers = 64,
         #                      shared_weights = False, dropout = 0.6).cuda()
-        teacher_model = Teacher(in_dim, 512, num_class = num_classes, dropout=0.5).cuda()
-        # teacher_model = GATTeacher(in_dim, 256, num_classes,dropout=0.6).cuda()
+#         teacher_model = Teacher(in_dim, 512, num_class = num_classes, dropout=0.5).cuda()
+        teacher_model = GATTeacher(in_dim, 128, num_classes,dropout=0.6).cuda()
         for conv in teacher_model.conv:
             conv.get_vertex = False
         # model = Teacher(in_dim, 512, num_class = num_classes,dropout=0.5).cuda()
@@ -144,9 +144,9 @@ if __name__ == '__main__':
             round += 1
         #run teacher model
             if round < 5:
-                train(data, teacher_model, back_label, back_train_mask, True, round,'gcn1')
+                train(data, teacher_model, back_label, back_train_mask, True, round,'gat1')
             else:
-                train(data, teacher_model, back_label, back_train_mask, False, round,'gcn1')
+                train(data, teacher_model, back_label, back_train_mask, False, round,'gat1')
 
             teacher_model.eval()
             with torch.no_grad():
